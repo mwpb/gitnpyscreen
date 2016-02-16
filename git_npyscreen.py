@@ -9,6 +9,7 @@ class MyTestApp(npyscreen.NPSAppManaged):
         self.registerForm('MAIN',MainForm())
         self.registerForm('EDIT',EditForm())
         self.registerForm('STAGE',StageForm())
+        self.registerForm('COMMIT',CommitForm())
 
 class repo_multiline(npyscreen.MultiLine):
     def display_value(self,vl):
@@ -16,6 +17,25 @@ class repo_multiline(npyscreen.MultiLine):
 
 class stage_multiselect(npyscreen.MultiSelect):
     pass
+
+class commit_selectone(npyscreen.SelectOne):
+    pass
+
+class CommitForm(npyscreen.ActionForm):
+    def create(self,*args,**keywords):
+        self.name = "Choose old commit or press n to create new:"
+        self.repo_name = ''
+        self.repo_path = ''
+        self.file_list = ''
+        self.commit_message = self.add(npyscreen.TitleText,name='Commit message: ')
+        #self.commit_selectone = self.add(commit_selectone,name='commit',value=0)
+    def on_cancel(self):
+        self.parentApp.switchFormPrevious()
+    def on_ok(self):
+        #self.parentApp.getForm('STAGE').name = self.commit_message.value
+        git_utils.commit_files(self.repo_path,self.file_list,self.commit_message.value)
+        #git_utils.commit_files(self.repo_path,self.file_list,self.commit_selectone.values[self.commit_selectone.cursor_line][0])
+        self.parentApp.switchFormPrevious()
 
 class EditForm(npyscreen.Form):
     def create(self,*args,**keywords):
@@ -31,7 +51,7 @@ class EditForm(npyscreen.Form):
     def do_something(self,input):
         self.parentApp.switchForm(None)
 
-class StageForm(npyscreen.Form):
+class StageForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
         self.name = "Staging Area"
         self.repo_name = ''
@@ -42,10 +62,20 @@ class StageForm(npyscreen.Form):
         self.handlers.update({"q": self.previous_form})
     def previous_form(self,input):
         self.parentApp.switchFormPrevious()
-    def afterEditing(self):
+    def on_cancel(self):
         self.parentApp.setNextFormPrevious()
+    def on_ok(self):
+        file_list = []
+        for modified_file in self.stage_multiselect.get_selected_objects():
+            full_path = self.repo_path+modified_file
+            file_list.append(full_path)
+        #self.parentApp.getForm('COMMIT').commit_selectone.values=sqlite_utils.get_commits(self.repo_path)
+        self.parentApp.getForm('COMMIT').repo_path = self.repo_path
+        self.parentApp.getForm('COMMIT').repo_name = self.repo_name
+        self.parentApp.getForm('COMMIT').file_list = file_list
+        self.parentApp.setNextForm('COMMIT')
 
-class MainForm(npyscreen.ActionFormMinimal):
+class MainForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
         self.name = "Repos"
         self.repo_multiline = self.add(repo_multiline,name='repos',values=sqlite_utils.list_repos(),value=0)
@@ -56,6 +86,8 @@ class MainForm(npyscreen.ActionFormMinimal):
         #self.parentApp.setNextForm(None)
     def stage(self,input):
         self.parentApp.getForm('STAGE').name = "Staging area for %s" % str(self.repo_multiline.values[self.repo_multiline.cursor_line][0])
+        self.parentApp.getForm('STAGE').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
+        self.parentApp.getForm('STAGE').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
         self.parentApp.getForm('STAGE').stage_multiselect.values=sqlite_utils.get_modified_files(str(self.repo_multiline.values[self.repo_multiline.cursor_line][1]))
         self.parentApp.switchForm('STAGE')
     def on_ok(self):

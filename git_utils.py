@@ -3,6 +3,11 @@ from sys import argv
 import os
 import datetime
 
+def commit_files(repo_path,file_list,commit_message):
+    repo = Repo(repo_path)
+    repo.index.add(file_list)
+    repo.index.commit(commit_message)
+
 def get_modified_files(repo_path):
     repo = Repo(repo_path)
     modified_files = []
@@ -24,9 +29,8 @@ def get_staged_files(repo_path):
 def get_commits(repo_path):
     repo = Repo(repo_path)
     commits_ahead = []
-    for file in repo.iter_commits('origin/master..master'):
-        lines = str(file).split('\n')
-        commits_ahead.append(lines[0])
+    for commit in repo.iter_commits('origin/master..master'):
+        commits_ahead.append(commit.message)
     print commits_ahead
     return commits_ahead
 
