@@ -10,6 +10,7 @@ class MyTestApp(npyscreen.NPSAppManaged):
         self.registerForm('EDIT',EditForm())
         self.registerForm('STAGE',StageForm())
         self.registerForm('COMMIT',CommitForm())
+        self.registerForm('MERGE',MergeForm())
 
 class repo_multiline(npyscreen.MultiLine):
     def display_value(self,vl):
@@ -24,23 +25,28 @@ class commit_multiselect(npyscreen.MultiSelect):
 class branch_selectone(npyscreen.SelectOne):
     pass
 
-#class MergeForm(npyscreen.ActionForm):
-#    def create(self,*args,**keywords):
-#        self.name = "Choose branch to merge with:"
-#        self.repo_name = ''
-#        self.repo_path = ''
-#        self.branch_list = []
-#        self.merge_selectone = self.add(merge_selectone,name='merge',values=[])
-#    #def set_up_handlers(self):
-#        #super(EditForm,self).set_up_handlers()
-#        #self.handlers.update({})
-#    def on_cancel(self):
-#        self.parentApp.switchFormPrevious()
-#    def on_ok(self):
-#        #self.parentApp.getForm('STAGE').name = self.commit_message.value
-#        git_utils.commit_files(self.repo_path,self.file_list,self.commit_message.value)
-#        #git_utils.commit_files(self.repo_path,self.file_list,self.commit_selectone.values[self.commit_selectone.cursor_line][0])
-#        self.parentApp.switchFormPrevious()
+class merge_selectone(npyscreen.SelectOne):
+    pass
+
+class MergeForm(npyscreen.ActionForm):
+    def create(self,*args,**keywords):
+        self.repo_path = ''
+        self.current_branch = git_utils.get_current_branch_name(self.repo_path)
+        self.name = "Current branch is %s Choose branch to merge with:" % self.current_branch
+        self.repo_name = ''
+        self.branch_list = []
+        self.merge_selectone = self.add(merge_selectone,name='merge',values=[])
+    #def set_up_handlers(self):
+        #super(EditForm,self).set_up_handlers()
+        #self.handlers.update({})
+    def on_cancel(self):
+        self.parentApp.switchFormPrevious()
+    def on_ok(self):
+        git_utils.merge_current(self.repo_path,self.merge_selectone.values[self.merge_selectone.cursor_line])
+        #self.parentApp.getForm('STAGE').name = self.commit_message.value
+        #git_utils.commit_files(self.repo_path,self.file_list,self.commit_message.value)
+        #git_utils.commit_files(self.repo_path,self.file_list,self.commit_selectone.values[self.commit_selectone.cursor_line][0])
+        self.parentApp.switchFormPrevious()
  
 #class CommitListForm(npyscreen.ActionForm):
 #    def create(self,*args,**keywords):
@@ -131,7 +137,7 @@ class MainForm(npyscreen.ActionForm):
         self.repo_multiline = self.add(repo_multiline,name='repos',values=sqlite_utils.list_repos(),value=0)
     def set_up_handlers(self):
         super(MainForm,self).set_up_handlers()
-        self.handlers.update({"m": self.merge,"q": self.exit,'a': self.edit_form,'s': self.stage})
+        self.handlers.update({'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'a': self.edit_form,'s': self.stage})
     #def afterEditing(self):
         #self.parentApp.setNextForm(None)
     def stage(self,input):
@@ -147,10 +153,17 @@ class MainForm(npyscreen.ActionForm):
     def edit_form(self,input):
         self.parentApp.switchForm('EDIT')
     def merge(self,*args,**keywords):
-        self.parentApp.getForm('COMMITLIST').commit_multiselect.values = git_utils.get_commits(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
-        self.parentApp.getForm('COMMITLIST').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
-        self.parentApp.getForm('COMMITLIST').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
-        self.parentApp.switchForm('COMMITLIST')
+        self.parentApp.getForm('MERGE').merge_selectone.values = git_utils.get_branches(self.repo_multiline.values[self.repo_multiline.cursor_line][1])+git_utils.get_remote_branches(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
+        self.parentApp.getForm('MERGE').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
+        self.parentApp.getForm('MERGE').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
+        self.parentApp.switchForm('MERGE')
+    def fetch(self,*args,**keywords):
+        git_utils.git_fetch(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
+        self.repo_multiline.values = sqlite_utils.list_repos()
+        self.repo_multiline.display()
+        self.DISPLAY()
+    def on_refresh(self,*args,**keywords):
+        self.repo_multiline.display()
 
 if __name__ == '__main__':
     TA = MyTestApp()
