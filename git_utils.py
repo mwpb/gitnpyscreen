@@ -10,6 +10,10 @@ def push_remote(repo_path,remote_name):
     git = sh.git.bake(_cwd=repo_path)
     git.push(remote,branch)
 
+def checkout(repo_path,new_branch):
+    git = sh.git.bake(_cwd=repo_path)
+    git.checkout(new_branch)
+
 def git_fetch(repo_path):
     repo = Repo(repo_path)
     repo.git.fetch('-p')

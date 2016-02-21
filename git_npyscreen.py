@@ -12,6 +12,7 @@ class MyTestApp(npyscreen.NPSAppManaged):
         self.registerForm('COMMIT',CommitForm())
         self.registerForm('MERGE',MergeForm())
         self.registerForm('REMOTES',RemoteForm())
+        self.registerForm('CHECKOUT',CheckoutForm())
 
 class repo_multiline(npyscreen.MultiLine):
     def display_value(self,vl):
@@ -31,6 +32,21 @@ class merge_selectone(npyscreen.SelectOne):
 
 class remote_selectone(npyscreen.SelectOne):
     pass 
+
+class checkout_selectone(npyscreen.SelectOne):
+    pass
+
+class CheckoutForm(npyscreen.ActionForm):
+    def create(self,*args,**keywords):
+        self.repo_path = ''
+        self.name = 'Checkout branch'
+        self.new_branch = ''
+        self.checkout_selectone = self.add(checkout_selectone,name='checkout',values=[])
+    def on_cancel(self):
+        self.parentApp.switchFormPrevious()
+    def on_ok(self):
+        git_utils.checkout(self.repo_path,self.checkout_selectone.get_selected_objects())
+        self.parentApp.switchFormPrevious()
 
 class RemoteForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
@@ -132,9 +148,11 @@ class MainForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
         self.name = "Repos"
         self.repo_multiline = self.add(repo_multiline,name='repos',values=sqlite_utils.list_repos(),value=0)
+    def before_editing(self):
+        self.update_list()
     def set_up_handlers(self):
         super(MainForm,self).set_up_handlers()
-        self.handlers.update({'P':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'a': self.edit_form,'s': self.stage})
+        self.handlers.update({'c':self.checkout,'P':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'a': self.edit_form,'s': self.stage})
     #def afterEditing(self):
         #self.parentApp.setNextForm(None)
     def stage(self,input):
@@ -161,10 +179,15 @@ class MainForm(npyscreen.ActionForm):
         self.DISPLAY()
     def on_refresh(self,*args,**keywords):
         self.repo_multiline.display()
+        self.DISPLAY()
     def do_push(self,*args,**keywords):
         self.parentApp.getForm('REMOTES').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
         self.parentApp.getForm('REMOTES').remote_selectone.values = git_utils.get_remote_branches(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
         self.parentApp.switchForm('REMOTES')        
+    def checkout(self,*args,**keywords):
+        self.parentApp.getForm('CHECKOUT').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
+        self.parentApp.getForm('CHECKOUT').checkout_selectone.values = git_utils.get_branches(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
+        self.parentApp.switchForm('CHECKOUT')        
 
 if __name__ == '__main__':
     TA = MyTestApp()
