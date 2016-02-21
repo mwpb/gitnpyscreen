@@ -15,7 +15,7 @@ class MyTestApp(npyscreen.NPSAppManaged):
 
 class repo_multiline(npyscreen.MultiLine):
     def display_value(self,vl):
-        return "{:10} {:20} {:10}".format(vl[0],vl[2],vl[1])
+        return "{:15} {:20} {:30} {:20}".format(vl[0],vl[2],vl[1],vl[3])
 
 class stage_multiselect(npyscreen.MultiSelect):
     pass

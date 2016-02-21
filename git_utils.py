@@ -14,6 +14,11 @@ def git_fetch(repo_path):
     repo = Repo(repo_path)
     repo.git.fetch('-p')
 
+def get_active_branch(repo_path):
+    repo = Repo(repo_path)
+    print repo.active_branch.name
+    return repo.active_branch.name
+
 def merge_current(repo_path,branch_name):
     repo = Repo(repo_path)
     current = repo.active_branch.name
