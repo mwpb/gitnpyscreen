@@ -1,11 +1,18 @@
 from git import Repo
 from sys import argv
 import os
+import sh
 import datetime
+
+def push_remote(repo_path,remote_name):
+    repo = Repo(repo_path)
+    (remote,branch) = remote_name[0].split('/')
+    git = sh.git.bake(_cwd=repo_path)
+    git.push(remote,branch)
 
 def git_fetch(repo_path):
     repo = Repo(repo_path)
-    repo.git.fetch()
+    repo.git.fetch('-p')
 
 def merge_current(repo_path,branch_name):
     repo = Repo(repo_path)
