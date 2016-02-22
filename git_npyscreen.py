@@ -4,6 +4,7 @@ import git_utils
 
 class MyTestApp(npyscreen.NPSAppManaged):
     def onStart(self):
+        npyscreen.setTheme(npyscreen.Themes.ElegantTheme)
         self.add_repo = sqlite_utils.add_repo
         self.list_repos = sqlite_utils.list_repos
         self.registerForm('MAIN',MainForm())
@@ -16,7 +17,7 @@ class MyTestApp(npyscreen.NPSAppManaged):
 
 class repo_multiline(npyscreen.MultiLine):
     def display_value(self,vl):
-        return "{:15} {:20} {:30} {:20}".format(vl[0],vl[2],vl[1],vl[3])
+        return "{:15} {:20} {:30} {:10} {:3} {:3}".format(vl[0],vl[2],vl[1],vl[3],vl[4],vl[5])
 
 class stage_multiselect(npyscreen.MultiSelect):
     pass
@@ -24,7 +25,7 @@ class stage_multiselect(npyscreen.MultiSelect):
 class commit_multiselect(npyscreen.MultiSelect):
     pass
 
-class branch_selectone(npyscreen.SelectOne):
+class branch_selectone(npyscreen.TitleSelectOne):
     pass
 
 class merge_selectone(npyscreen.SelectOne):
@@ -81,15 +82,14 @@ class MergeForm(npyscreen.ActionForm):
  
 class CommitForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
-        self.name = "Choose old commit or press n to create new:"
+        self.name = "Commit message and branch confirmation"
         self.repo_name = ''
         self.repo_path = ''
         self.file_list = ''
         self.get_branch_name = 'master'
-        self.commit_message = self.add(npyscreen.TitleText,name='Commit message: ')
+        self.commit_message = self.add_widget(npyscreen.TitleText,use_two_lines=False,name='Commit message:')
         self.branch_list = []
-        self.add(npyscreen.TitleText,value="The current branch is selected. If this commit is intended for another branch specify it here. In that case I'll do the commit but then perform a git reset HEAD~1 and roll back the working tree and index. Then you can pick up the pieces from git reflog.")
-        self.branch_selectone = self.add(branch_selectone,name='merge',value=0,values=[])
+        self.branch_selectone = self.add(branch_selectone,name='Currently tracking '+self.get_branch_name+'. Selecting another will reset HEAD~1 and roll back.',value=0,values=[])
     #def set_up_handlers(self):
         #super(EditForm,self).set_up_handlers()
         #self.handlers.update({"m": self.merge})
@@ -102,13 +102,16 @@ class CommitForm(npyscreen.ActionForm):
             commit_branch_name = branch
         git_utils.commit_files(self.repo_path,self.file_list,self.commit_message.value,commit_branch_name)
         #git_utils.commit_files(self.repo_path,self.file_list,self.commit_selectone.values[self.commit_selectone.cursor_line][0])
-        self.parentApp.switchFormPrevious()
+        self.parentApp.switchForm('MAIN')
     
-class EditForm(npyscreen.Form):
+class EditForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
         self.name = "Add Repo"
         self.repo_name = self.add(npyscreen.TitleText,name='Repo Name')
         self.repo_path = self.add(npyscreen.TitleText,name='Repo Path')
+    def beforeEditing(self):
+        self.repo_name.value = ''
+        self.repo_path.value = ''
     def set_up_handlers(self):
         super(EditForm,self).set_up_handlers()
         self.handlers.update({"q": self.do_something})
@@ -117,6 +120,8 @@ class EditForm(npyscreen.Form):
         self.parentApp.setNextFormPrevious()
     def do_something(self,input):
         self.parentApp.switchForm(None)
+    def on_cancel(self):
+        self.parentApp.switchFormPrevious()
 
 class StageForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
@@ -147,12 +152,13 @@ class StageForm(npyscreen.ActionForm):
 class MainForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
         self.name = "Repos"
-        self.repo_multiline = self.add(repo_multiline,name='repos',values=sqlite_utils.list_repos(),value=0)
-    def before_editing(self):
-        self.update_list()
+        self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:20} {:30} {:10} {:3} {:3}".format('Repo Name','Last Fetch','Repo Path','Tracking','Ahead','Behind'))
+        self.repo_multiline = self.add(repo_multiline,name="{:15} {:20} {:30} {:20}".format('Repo name','Last Fetch','Repo Path','Tracking Branch'),values=sqlite_utils.list_repos(),value=0)
+    def beforeEditing(self):
+        self.repo_multiline.values = sqlite_utils.list_repos()
     def set_up_handlers(self):
         super(MainForm,self).set_up_handlers()
-        self.handlers.update({'c':self.checkout,'P':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'a': self.edit_form,'s': self.stage})
+        self.handlers.update({'X':self.remove_repo,'c':self.checkout,'P':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'a': self.edit_form,'s': self.stage})
     #def afterEditing(self):
         #self.parentApp.setNextForm(None)
     def stage(self,input):
@@ -188,6 +194,12 @@ class MainForm(npyscreen.ActionForm):
         self.parentApp.getForm('CHECKOUT').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
         self.parentApp.getForm('CHECKOUT').checkout_selectone.values = git_utils.get_branches(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
         self.parentApp.switchForm('CHECKOUT')        
+    def remove_repo(self,*args,**keywords):
+        sqlite_utils.delete_repo(self.repo_multiline.values[self.repo_multiline.cursor_line][0])
+        self.beforeEditing()
+        self.repo_multiline.display()
+        self.DISPLAY()
+
 
 if __name__ == '__main__':
     TA = MyTestApp()

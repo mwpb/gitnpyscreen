@@ -42,14 +42,15 @@ def list_repos():
     repo_list = c.fetchall()
     new_list = []
     for row in repo_list:
-        row = row+(str(repo_last_fetch_time(row[1])),)+(str(get_active_branch(row[1])),)
+        row = row+(str(repo_last_fetch_time(row[1])),)+(str(get_active_branch(row[1])),)+(len(get_commits(row[1])),)+(len(get_commits_behind(row[1])),)
         new_list.append(row)
     c.close()
     print new_list
     return new_list
 
 if __name__ == '__main__':
-    #repo_name = raw_input('enter repo name: ')
+    repo_name = raw_input('enter repo name: ')
     #repo_path = raw_input('enter repo path: ')
     #add_repo(repo_name,repo_path)
-    list_repos()
+    #list_repos()
+    delete_repo(repo_name)
