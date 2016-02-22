@@ -2,7 +2,8 @@
 
 A curses front-end to git.
 Designed for use with multiple repositories.
-Currently under construction.
+Release 0.1.0. 
+NO merge functionality.
 
 ## Dependencies
 
