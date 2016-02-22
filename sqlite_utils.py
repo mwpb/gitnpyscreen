@@ -42,7 +42,10 @@ def list_repos():
     repo_list = c.fetchall()
     new_list = []
     for row in repo_list:
-        row = row+(str(repo_last_fetch_time(row[1])),)+(str(get_active_branch(row[1])),)+(len(get_commits(row[1])),)+(len(get_commits_behind(row[1])),)
+        star = '*'
+        if len(get_modified_files(row[1])) == 0:
+            star = ''
+        row = row+(str(repo_last_fetch_time(row[1])),)+(str(get_active_branch(row[1])),)+(str(len(get_commits(row[1])))+star,)+(len(get_commits_behind(row[1])),)
         new_list.append(row)
     c.close()
     print new_list
