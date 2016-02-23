@@ -1,24 +1,17 @@
-# Git Screen
+# Unpub
+http://unpub-mwpb.rhcloud.com/
 
-A curses front-end to git.
-Designed for use with multiple repositories.
-Release 0.1.0. 
-NO merge functionality.
+A site for uploading not-necessarily-published results.
+(Similar to how the category of non-commutative rings includes commutative ones...)
 
-## Dependencies
+Work in progress.
 
-###npyscreen
-http://npyscreen.readthedocs.org/example-addressbk.html?highlight=recordlist
+Currently unused.
 
-pip install npyscreen
+## Features
 
-###gitpython
-http://gitpython.readthedocs.org/en/stable/
+User authentication.
 
-pip install gitpython
+File uploading.
 
-##Also uses
-
-###sqlite3 python module
-https://docs.python.org/2/library/sqlite3.html
-
+Searching a MySQL database for metadata.

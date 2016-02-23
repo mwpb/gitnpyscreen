@@ -68,16 +68,10 @@ class MergeForm(npyscreen.ActionForm):
         self.repo_name = ''
         self.branch_list = []
         self.merge_selectone = self.add(merge_selectone,name='merge',values=[])
-    #def set_up_handlers(self):
-        #super(EditForm,self).set_up_handlers()
-        #self.handlers.update({})
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
         git_utils.merge_current(self.repo_path,self.merge_selectone.values[self.merge_selectone.cursor_line])
-        #self.parentApp.getForm('STAGE').name = self.commit_message.value
-        #git_utils.commit_files(self.repo_path,self.file_list,self.commit_message.value)
-        #git_utils.commit_files(self.repo_path,self.file_list,self.commit_selectone.values[self.commit_selectone.cursor_line][0])
         self.parentApp.switchFormPrevious()
  
 class CommitForm(npyscreen.ActionForm):
