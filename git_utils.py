@@ -7,8 +7,8 @@ import datetime
 def untracked_files(repo_path):
     git = sh.git.bake(_cwd=repo_path)
     untracked_list = git('ls-files','.','--exclude-standard','--others').split('\n')
-    print untracked_list
-    return untracked_list
+    print filter(bool,untracked_list)
+    return filter(bool,untracked_list)
 
 def track_files(repo_path,file_list):
     git = sh.git.bake(_cwd=repo_path)
