@@ -4,6 +4,18 @@ import os
 import sh
 import datetime
 
+def untracked_files(repo_path):
+    git = sh.git.bake(_cwd=repo_path)
+    untracked_list = git('ls-files','.','--exclude-standard','--others').split('\n')
+    print untracked_list
+    return untracked_list
+
+def track_files(repo_path,file_list):
+    git = sh.git.bake(_cwd=repo_path)
+    for file_for_tracking in file_list:
+        git.add('-N',file_for_tracking)
+        print 'tracking %s but not staging' % file_for_tracking
+
 def push_remote(repo_path,remote_name):
     repo = Repo(repo_path)
     (remote,branch) = remote_name[0].split('/')

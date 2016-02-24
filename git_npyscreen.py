@@ -14,10 +14,14 @@ class MyTestApp(npyscreen.NPSAppManaged):
         self.registerForm('MERGE',MergeForm())
         self.registerForm('REMOTES',RemoteForm())
         self.registerForm('CHECKOUT',CheckoutForm())
+        self.registerForm('UNTRACKED',UntrackedForm())
 
 class repo_multiline(npyscreen.MultiLine):
     def display_value(self,vl):
-        return "{:15} {:20} {:30} {:10} {:3} {:3}".format(vl[0],vl[2],vl[1],vl[3],vl[4],vl[5])
+        return "{:15} {:3}{:19} {:30} {:10} {:7}".format(vl[0],vl[5],vl[2],vl[1],vl[3],vl[4])
+
+class bindings_pager(npyscreen.Pager):
+    pass
 
 class stage_multiselect(npyscreen.MultiSelect):
     pass
@@ -36,6 +40,20 @@ class remote_selectone(npyscreen.SelectOne):
 
 class checkout_selectone(npyscreen.SelectOne):
     pass
+
+class untracked_multiselect(npyscreen.MultiSelect):
+    pass
+
+class UntrackedForm(npyscreen.ActionForm):
+    def create(self,*args,**keywords):
+        self.repo_path = ''
+        self.name = 'Untracked Files'
+        self.untracked_multiselect = self.add(untracked_multiselect,name='untracked',values=[])
+    def on_cancel(self):
+        self.parentApp.switchFormPrevious()
+    def on_ok(self):
+        git_utils.track_files(self.repo_path,self.untracked_multiselect.get_selected_objects())
+        self.parentApp.switchForm('MAIN')
 
 class CheckoutForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
@@ -146,13 +164,23 @@ class StageForm(npyscreen.ActionForm):
 class MainForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
         self.name = "Repos"
-        self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:20} {:30} {:10} {:3} {:3}".format('Repo Name','Last Fetch','Repo Path','Tracking','Ahead','Behind'))
-        self.repo_multiline = self.add(repo_multiline,name="{:15} {:20} {:30} {:20}".format('Repo name','Last Fetch','Repo Path','Tracking Branch'),values=sqlite_utils.list_repos(),value=0)
+        self.bindings_string='''
+        u - track Untracked files
+        t - stage Tracked files
+        m - merge tracked branch with local or remote
+        a - push files that are Ahead of remote (displays origin master at moment)
+        + - add repo
+        - - remove repo under cursor
+        '''
+        self.bindings_list = self.bindings_string.split('\n')
+        self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:3}{:19} {:30} {:10} {:7}".format('Repo Name','(B)','Last Fetch','Repo Path','Tracking','u/t/m/a'))
+        self.repo_multiline = self.add(repo_multiline,name="repos",values=sqlite_utils.list_repos(),value=0,max_height=10)
+        self.bindings_pager = self.add(bindings_pager,name='bindings',values=self.bindings_list)
     def beforeEditing(self):
         self.repo_multiline.values = sqlite_utils.list_repos()
     def set_up_handlers(self):
         super(MainForm,self).set_up_handlers()
-        self.handlers.update({'X':self.remove_repo,'c':self.checkout,'P':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'a': self.edit_form,'s': self.stage})
+        self.handlers.update({'u':self.untracked_files,'-':self.remove_repo,'c':self.checkout,'P':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'+': self.edit_form,'t':self.stage})
     #def afterEditing(self):
         #self.parentApp.setNextForm(None)
     def stage(self,input):
@@ -193,7 +221,10 @@ class MainForm(npyscreen.ActionForm):
         self.beforeEditing()
         self.repo_multiline.display()
         self.DISPLAY()
-
+    def untracked_files(self,*args,**keywords):
+        self.parentApp.getForm('UNTRACKED').untracked_multiselect.values = git_utils.untracked_files(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
+        self.parentApp.getForm('UNTRACKED').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
+        self.parentApp.switchForm('UNTRACKED')
 
 if __name__ == '__main__':
     TA = MyTestApp()
