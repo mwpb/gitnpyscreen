@@ -180,7 +180,7 @@ class MainForm(npyscreen.ActionForm):
         self.repo_multiline.values = sqlite_utils.list_repos()
     def set_up_handlers(self):
         super(MainForm,self).set_up_handlers()
-        self.handlers.update({'u':self.untracked_files,'-':self.remove_repo,'c':self.checkout,'P':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'+': self.edit_form,'t':self.stage})
+        self.handlers.update({'u':self.untracked_files,'-':self.remove_repo,'c':self.checkout,'a':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'+': self.edit_form,'t':self.stage})
     #def afterEditing(self):
         #self.parentApp.setNextForm(None)
     def stage(self,input):
