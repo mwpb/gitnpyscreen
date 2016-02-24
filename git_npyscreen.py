@@ -18,7 +18,7 @@ class MyTestApp(npyscreen.NPSAppManaged):
 
 class repo_multiline(npyscreen.MultiLine):
     def display_value(self,vl):
-        return "{:15} {:3}{:19} {:30} {:10} {:7}".format(vl[0],vl[5],vl[2],vl[1],vl[3],vl[4])
+        return "{:15} {:3}{:19} {:30} {:9} {:7}".format(vl[0],vl[5],vl[2],vl[1],vl[3],vl[4])
 
 class bindings_pager(npyscreen.Pager):
     pass
@@ -173,7 +173,7 @@ class MainForm(npyscreen.ActionForm):
         - - remove repo under cursor
         '''
         self.bindings_list = self.bindings_string.split('\n')
-        self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:3}{:19} {:30} {:10} {:7}".format('Repo Name','(B)','Last Fetch','Repo Path','Tracking','u/t/m/a'))
+        self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:3}{:19} {:30} {:9} {:7}".format('Repo Name','(B)','Last Fetch','Repo Path','Tracking','u/t/m/a'))
         self.repo_multiline = self.add(repo_multiline,name="repos",values=sqlite_utils.list_repos(),value=0,max_height=10)
         self.bindings_pager = self.add(bindings_pager,name='bindings',values=self.bindings_list)
     def beforeEditing(self):
