@@ -165,7 +165,7 @@ class MainForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
         self.name = "Repos"
         self.bindings_string='''
-        u - track Untracked files
+        u - stage Untracked files
         t - stage Tracked files
         m - merge tracked branch with local or remote
         a - push files that are Ahead of remote (displays origin master at moment)
