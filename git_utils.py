@@ -14,7 +14,7 @@ def track_files(repo_path,file_list):
     git = sh.git.bake(_cwd=repo_path)
     for file_for_tracking in file_list:
         git.add(file_for_tracking)
-        print 'tracking %s but not staging' % file_for_tracking
+        git.commit('-m','added new files')
 
 def push_remote(repo_path,remote_name):
     repo = Repo(repo_path)
@@ -74,11 +74,13 @@ def get_branches(repo_path):
 
 def commit_files(repo_path,file_list,commit_message,commit_branch_name):
     repo = Repo(repo_path)
-    repo.index.add(file_list)
+    git = sh.git.bake(_cwd=repo_path)
+    for commit_file in file_list:
+        git.add('-u',commit_file)
     if commit_branch_name == repo.active_branch.name:
-        repo.index.commit(commit_message)
+        git.commit('-m',commit_message)
     else:
-        repo.index.commit(commit_message+'INTENDED BRANCH='+commit_branch_name)
+        git.commit('-m',commit_message+'INTENDED BRANCH='+commit_branch_name)
         repo.head.reset('HEAD~1',working_tree=True,index=True)
 
 def get_modified_files(repo_path):
