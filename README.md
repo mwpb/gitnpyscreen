@@ -1,7 +1,8 @@
-# Git Screen
+# Repo-screen
 
 A curses front-end to git.
-Designed for use with multiple repositories.
+Designed to see status of multiple repositories at a glance.
+
 Release 0.2.0. 
 Can now merge but no conflict resolution.
 
