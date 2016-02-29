@@ -13,8 +13,8 @@ import git_utils
 class MyTestApp(npyscreen.NPSAppManaged):
     def onStart(self):
         npyscreen.setTheme(npyscreen.Themes.ElegantTheme)
-        #self.add_repo = sqlite_utils.add_repo
-        #self.list_repos = sqlite_utils.list_repos
+        self.add_repo = sqlite_utils.add_repo
+        self.list_repos = sqlite_utils.list_repos
         self.registerForm('MAIN',MainForm())
         self.registerForm('EDIT',EditForm())
         self.registerForm('STAGE',StageForm())
