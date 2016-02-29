@@ -17,6 +17,11 @@ http://gitpython.readthedocs.org/en/stable/
 
 pip install gitpython
 
+### python sh
+https://amoffat.github.io/sh/
+
+pip install sh
+
 ##Also uses
 
 ###sqlite3 python module
