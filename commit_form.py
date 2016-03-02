@@ -26,5 +26,3 @@ class CommitForm(npyscreen.ActionForm):
             commit_branch_name = branch
         git_utils.commit_files(self.repo_path,self.file_list,self.commit_message.value,commit_branch_name)
         self.parentApp.switchForm('MAIN')
-    
-
