@@ -9,7 +9,9 @@ Can now merge but no conflict resolution.
 ## Dependencies
 See requirements.txt for precise version numbers.
 Then 
+    
     pip install -r requirements.txt 
+
 should install the right dependencies.
 
 ###npyscreen
