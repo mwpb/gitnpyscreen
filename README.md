@@ -17,17 +17,17 @@ should install the right dependencies.
 ###npyscreen
 http://npyscreen.readthedocs.org/example-addressbk.html?highlight=recordlist
 
-pip install npyscreen
+    pip install npyscreen
 
 ###gitpython
 http://gitpython.readthedocs.org/en/stable/
 
-pip install gitpython
+    pip install gitpython
 
 ### python sh
 https://amoffat.github.io/sh/
 
-pip install sh
+    pip install sh
 
 ##Also uses
 
