@@ -1,30 +1,33 @@
 from sys import argv
 from git_utils import *
+from os.path import expanduser
 import sqlite3
 
+dbPath = expanduser('~')+'/.config/repo-screen/repoDatabase.db'
+
 def add_repo(repo_name,repo_path):
-    db = sqlite3.connect('test.db')
+    db = sqlite3.connect(dbPath)
     c = db.cursor()
     c.execute("INSERT INTO repos(repo_name,repo_path) VALUES(?,?)",(repo_name,repo_path))
     db.commit()
     c.close()
 
-#def __init__(filename):
-#    db = sqlite3.connect('test.db')
-#    c = db.cursor()
-#    c.execute("CREATE TABLE IF NOT EXISTS repos (repo_name text,repo_path text)")
-#    db.commit()
-#    c.close()
+def createDB():
+    db = sqlite3.connect(dbPath)
+    c = db.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS repos (repo_name text,repo_path text)")
+    db.commit()
+    c.close()
 
 def delete_repo(repo_name):
-    db = sqlite3.connect('test.db')
+    db = sqlite3.connect(dbPath)
     c = db.cursor()
     c.execute("DELETE FROM repos where repo_name=?",(repo_name,))
     db.commit()
     c.close()
 
 def get_repo(repo_name):
-    db = sqlite3.connect('test.db')
+    db = sqlite3.connect(dbPath)
     c = db.cursor()
     c.execute("select %s from repos" % repo_name)
     repo_list = c.fetchall()
@@ -36,7 +39,7 @@ def get_repo(repo_name):
     return new_list
 
 def list_repos():
-    db = sqlite3.connect('test.db')
+    db = sqlite3.connect(dbPath)
     c = db.cursor()
     c.execute("select * from repos")
     repo_list = c.fetchall()

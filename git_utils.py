@@ -118,9 +118,13 @@ def get_commits_behind(repo_path):
     return commits_behind
 
 def repo_last_fetch_time(repo_path):
-    t = os.path.getmtime(repo_path+'.git/FETCH_HEAD')
-    print datetime.datetime.fromtimestamp(t)
-    return datetime.datetime.fromtimestamp(t)
+    try:
+        t = os.path.getmtime(repo_path+'.git/FETCH_HEAD')
+        print datetime.datetime.fromtimestamp(t)
+        return datetime.datetime.fromtimestamp(t)
+    except:
+        print 'No FETCH_HEAD'
+        return 'No FETCH_HEAD'
 
 if __name__ == '__main__':
     script, repo_path = argv
