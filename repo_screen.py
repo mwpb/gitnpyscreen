@@ -12,7 +12,7 @@ from untracked_form import *
 import sqlite_utils
 import git_utils
 
-class MyTestApp(npyscreen.NPSAppManaged):
+class repoScreenApp(npyscreen.NPSAppManaged):
     def onStart(self):
         initialiseDB()
         npyscreen.setTheme(npyscreen.Themes.ElegantTheme)
@@ -41,5 +41,5 @@ def initialiseDB():
     sqlite_utils.createDB()
 
 if __name__ == '__main__':
-    TA = MyTestApp()
+    TA = repoScreenApp()
     TA.run()
