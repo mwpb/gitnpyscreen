@@ -35,9 +35,12 @@ class MainForm(npyscreen.ActionForm):
         self.parentApp.getForm('STAGE').name = "Staging area for %s" % str(self.repo_multiline.values[self.repo_multiline.cursor_line][0])
         self.parentApp.getForm('STAGE').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
         self.parentApp.getForm('STAGE').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
+        self.parentApp.getForm('STAGE').value = []
         self.parentApp.getForm('STAGE').stage_multiselect.values=sqlite_utils.get_modified_files(str(self.repo_multiline.values[self.repo_multiline.cursor_line][1]))
         self.parentApp.switchForm('STAGE')
     def on_ok(self):
+        self.parentApp.switchForm(None)
+    def on_cancel(self):
         self.parentApp.switchForm(None)
     def exit(self,input):
         self.parentApp.switchForm(None)
