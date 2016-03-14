@@ -20,9 +20,6 @@ class StageForm(npyscreen.ActionForm):
         self.parentApp.setNextFormPrevious()
     def on_ok(self):
         file_list = [self.repo_path+i for i in self.stage_multiselect.get_selected_objects()]
-        #for modified_file in self.stage_multiselect.get_selected_objects():
-        #    full_path = self.repo_path+modified_file
-        #    file_list.append(full_path)
         self.parentApp.getForm('COMMIT').repo_path = self.repo_path
         self.parentApp.getForm('COMMIT').repo_name = self.repo_name
         self.parentApp.getForm('COMMIT').file_list = file_list
