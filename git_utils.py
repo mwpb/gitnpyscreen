@@ -7,7 +7,7 @@ import datetime
 def untracked_files(repo_path):
     git = sh.git.bake(_cwd=repo_path)
     untracked_list = git('ls-files','.','--exclude-standard','--others').split('\n')
-    print filter(bool,untracked_list)
+    #print filter(bool,untracked_list)
     return filter(bool,untracked_list)
 
 def track_files(repo_path,file_list):
@@ -31,7 +31,7 @@ def git_fetch(repo_path):
 
 def get_active_branch(repo_path):
     repo = Repo(repo_path)
-    print repo.active_branch.name
+    #print repo.active_branch.name
     return repo.active_branch.name
 
 def merge_current(repo_path,branch_name):
@@ -42,7 +42,7 @@ def merge_current(repo_path,branch_name):
 def get_current_branch_name(repo_path):
     repo = Repo(repo_path)
     value = repo.active_branch.name
-    print value
+    #print value
     return value
 
 def get_current_branch_number(repo_path):
@@ -52,7 +52,7 @@ def get_current_branch_number(repo_path):
     for param, head in enumerate(repo.heads):
         if head.name == repo.active_branch.name:
             value = param
-    print value
+    #print value
     return value
 
 def get_remote_branches(repo_path):
@@ -60,7 +60,7 @@ def get_remote_branches(repo_path):
     remote_branches = []
     for branch in repo.git.branch('-r').split('\n'):
         remote_branches.append(branch.strip())
-    print remote_branches
+    #print remote_branches
     return remote_branches
 
 def get_branches(repo_path):
@@ -68,7 +68,7 @@ def get_branches(repo_path):
     branch_list = []
     for head in repo.heads:
         branch_list.append(head.name)
-    print branch_list
+    #print branch_list
     return branch_list
 
 def commit_files(repo_path,file_list,commit_message,commit_branch_name):
@@ -88,7 +88,7 @@ def get_modified_files(repo_path):
     for file in repo.index.diff(None):
         lines = str(file).split('\n')
         modified_files.append(lines[0])
-    print modified_files
+    #print modified_files
     return modified_files
 
 def get_staged_files(repo_path):
@@ -97,7 +97,7 @@ def get_staged_files(repo_path):
     for file in repo.index.diff('Head'):
         lines = str(file).split('\n')
         staged_files.append(lines[0])
-    print staged_files
+    #print staged_files
     return staged_files
 
 def get_commits(repo_path):
@@ -105,7 +105,7 @@ def get_commits(repo_path):
     commits_ahead = []
     for commit in repo.iter_commits('origin/master..master'):
         commits_ahead.append(commit.message)
-    print commits_ahead
+    #print commits_ahead
     return commits_ahead
 
 def get_commits_behind(repo_path):
@@ -113,16 +113,16 @@ def get_commits_behind(repo_path):
     commits_behind = []
     for commit in repo.iter_commits('master..origin/master'):
         commits_behind.append(commit.message)
-    print commits_behind
+    #print commits_behind
     return commits_behind
 
 def repo_last_fetch_time(repo_path):
     try:
         t = os.path.getmtime(repo_path+'.git/FETCH_HEAD')
-        print datetime.datetime.fromtimestamp(t)
+        #print datetime.datetime.fromtimestamp(t)
         return datetime.datetime.fromtimestamp(t)
     except:
-        print 'No FETCH_HEAD'
+        #print 'No FETCH_HEAD'
         return 'No FETCH_HEAD'
 
 if __name__ == '__main__':
