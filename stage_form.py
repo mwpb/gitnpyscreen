@@ -1,8 +1,15 @@
 import npyscreen
 import sqlite_utils
 import git_utils
+import curses
 
 class stage_multiselect(npyscreen.MultiSelect):
+    def set_up_handlers(self):
+        super(stage_multiselect,self).set_up_handlers()
+        self.handlers.update({curses.ascii.SP:self.toggle_then_down})
+    def toggle_then_down(self,input):
+        self.h_select_toggle(self)
+        self.h_cursor_line_down(self)
     pass
 
 class StageForm(npyscreen.ActionForm):
