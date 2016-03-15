@@ -73,6 +73,7 @@ class MainForm(npyscreen.ActionForm):
         self.repo_multiline.display()
         self.DISPLAY()
     def untracked_files(self,*args,**keywords):
+        self.parentApp.getForm('UNTRACKED').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
         self.parentApp.getForm('UNTRACKED').untracked_multiselect.values = git_utils.untracked_files(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
         self.parentApp.getForm('UNTRACKED').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
         self.parentApp.switchForm('UNTRACKED')

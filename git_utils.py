@@ -14,7 +14,6 @@ def track_files(repo_path,file_list):
     git = sh.git.bake(_cwd=repo_path)
     for file_for_tracking in file_list:
         git.add(file_for_tracking)
-        git.commit('-m','added new files')
 
 def push_remote(repo_path,remote_name):
     repo = Repo(repo_path)
