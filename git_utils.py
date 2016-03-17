@@ -16,8 +16,7 @@ def track_files(repo_path,file_list):
         git.add(file_for_tracking)
 
 def push_remote(repo_path,remote_name):
-    repo = Repo(repo_path)
-    (remote,branch) = remote_name[0].split('/')
+    (remote,branch) = remote_name.split('/')
     git = sh.git.bake(_cwd=repo_path)
     git.push(remote,branch)
 
@@ -26,24 +25,18 @@ def checkout(repo_path,new_branch):
     git.checkout(new_branch)
 
 def git_fetch(repo_path):
-    repo = Repo(repo_path)
-    repo.git.fetch('-p')
+    git = sh.git.bake(_cwd=repo_path)
+    git.fetch('-p')
 
 def get_active_branch(repo_path):
-    repo = Repo(repo_path)
+    git = sh.git.bake(_cwd=repo_path)
+    active_branch = git('rev-parse','--abbrev-ref','HEAD')
     #print repo.active_branch.name
-    return repo.active_branch.name
+    return active_branch
 
 def merge_current(repo_path,branch_name):
-    repo = Repo(repo_path)
-    current = repo.active_branch.name
-    repo.git.merge(branch_name)
-
-def get_current_branch_name(repo_path):
-    repo = Repo(repo_path)
-    value = repo.active_branch.name
-    #print value
-    return value
+    git = sh.git.bake(_cwd=repo_path)
+    git.merge(branch_name)
 
 def get_current_branch_number(repo_path):
     repo = Repo(repo_path)
@@ -83,6 +76,7 @@ def commit_files(repo_path,file_list,commit_message,commit_branch_name):
         repo.head.reset('HEAD~1',working_tree=True,index=True)
 
 def get_modified_files(repo_path):
+    print repo_path
     repo = Repo(repo_path)
     modified_files = []
     for file in repo.index.diff(None):

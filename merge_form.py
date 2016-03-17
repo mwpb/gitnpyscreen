@@ -5,14 +5,19 @@ import git_utils
 class merge_selectone(npyscreen.SelectOne):
     pass
 
+class merge_fixedText(npyscreen.FixedText):
+    pass
+
 class MergeForm(npyscreen.ActionForm):
     def create(self,*args,**keywords):
         self.repo_path = ''
-        self.current_branch = git_utils.get_current_branch_name(self.repo_path)
-        self.name = "Current branch is %s Choose branch to merge with:" % self.current_branch
+        self.current_branch = ''
         self.repo_name = ''
         self.branch_list = []
+        self.merge_fixedText = self.add(merge_fixedText,value='')
         self.merge_selectone = self.add(merge_selectone,name='merge',values=[])
+    def beforeEditing(self):
+        self.merge_fixedText.value = 'Current branch is %s. Please select branch to merge with:' % self.current_branch
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
     def on_ok(self):

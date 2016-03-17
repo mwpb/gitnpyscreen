@@ -13,5 +13,5 @@ class RemoteForm(npyscreen.ActionForm):
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
-        git_utils.push_remote(self.repo_path,self.remote_selectone.get_selected_objects())
+        git_utils.push_remote(self.repo_path,self.remote_selectone.get_selected_objects()[0])
         self.parentApp.switchFormPrevious()

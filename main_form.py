@@ -50,6 +50,7 @@ class MainForm(npyscreen.ActionForm):
         self.parentApp.getForm('MERGE').merge_selectone.values = git_utils.get_branches(self.repo_multiline.values[self.repo_multiline.cursor_line][1])+git_utils.get_remote_branches(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
         self.parentApp.getForm('MERGE').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
         self.parentApp.getForm('MERGE').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
+        self.parentApp.getForm('MERGE').current_branch = git_utils.get_active_branch(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
         self.parentApp.switchForm('MERGE')
     def fetch(self,*args,**keywords):
         git_utils.git_fetch(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
