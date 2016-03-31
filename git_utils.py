@@ -115,6 +115,8 @@ def repo_last_fetch_time(repo_path):
         #print 'No FETCH_HEAD'
         return 'No FETCH_HEAD'
 
+## Rebase workflow completely contained below
+
 def create_branch(repo_path,new_branch):
     git = sh.git.bake(_cwd=repo_path)
     git.checkout('-b',new_branch)
@@ -136,11 +138,18 @@ def active_branch(repo_path):
     active_branch = git('rev-parse','--abbrev-ref','HEAD')
     return str(active_branch).strip()
 
+def list_tracking_branches(repo_path):
+    git = sh.git.bake(_cwd=repo_path)
+    branches = git('for-each-ref',"--format='%(refname:short),%(upstream:short)'","refs/heads").splitlines()
+    branches = [branch.strip("'").split(',') for branch in branches]
+    branches = [branch for branch in branches if branch[1]!='']
+    return branches
+
 if __name__ == '__main__':
-    repo_path = raw_input('Please enter repo path:')
+    #repo_path = raw_input('Please enter repo path:')
     #create_branch('/Users/mat/','master-temp')
-    print type(active_branch(repo_path))
-    print active_branch(repo_path)
+    #print type(active_branch(repo_path))
+    print list_tracking_branches('/Users/mat/')
     #tracked_branch = tracked_branch(repo_path,'temp')
     #print tracked_branch
     #print 'modified files'
