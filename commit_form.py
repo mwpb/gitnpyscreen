@@ -18,8 +18,8 @@ class CommitForm(npyscreen.ActionForm):
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
-        #if git_utils.tracked_branch(self.active_branch,self.active_branch) != None:
-        temp_branch = self.active_branch+'-tmp'
-        git_utils.create_branch(self.repo_path,temp_branch)
+        if git_utils.tracked_branch(self.active_branch,self.active_branch) != None:
+            temp_branch = self.active_branch+'-tmp'
+            git_utils.create_branch(self.repo_path,temp_branch)
         git_utils.commit_files(self.repo_path,self.file_list,self.commit_message.value)
         self.parentApp.switchForm('MAIN')
