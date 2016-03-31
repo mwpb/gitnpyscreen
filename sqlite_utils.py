@@ -45,16 +45,10 @@ def list_repos():
     repo_list = c.fetchall()
     new_list = []
     for row in repo_list:
-        print row
-        print row[1]
         u = str(len(untracked_files(row[1])))
-        print u
         t = str(len(get_modified_files(row[1])))
-        print t
         m = str(len(get_staged_files(row[1])))
-        print m
         a = str(len(get_commits(row[1])))
-        print a
         file_statuses = u+'/'+t+'/'+m+'/'+a
         row = row+(str(repo_last_fetch_time(row[1])),)+(str(get_active_branch(row[1])),)+(file_statuses,)+('('+str(len(get_commits_behind(row[1])))+')',)
         new_list.append(row)
