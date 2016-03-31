@@ -64,16 +64,11 @@ def get_branches(repo_path):
     #print branch_list
     return branch_list
 
-def commit_files(repo_path,file_list,commit_message,commit_branch_name):
-    repo = Repo(repo_path)
+def commit_files(repo_path,file_list,commit_message):
     git = sh.git.bake(_cwd=repo_path)
     for commit_file in file_list:
         git.add('-u',commit_file)
-    if commit_branch_name == repo.active_branch.name:
-        git.commit('-m',commit_message)
-    else:
-        git.commit('-m',commit_message+'INTENDED BRANCH='+commit_branch_name)
-        repo.head.reset('HEAD~1',working_tree=True,index=True)
+    git.commit('-m',commit_message)
 
 def get_modified_files(repo_path):
     print repo_path
@@ -86,6 +81,7 @@ def get_modified_files(repo_path):
     return modified_files
 
 def get_staged_files(repo_path):
+    git = sh.git.bake(_cwd=repo_path)
     repo = Repo(repo_path)
     staged_files = []
     for file in repo.index.diff('Head'):
@@ -119,19 +115,43 @@ def repo_last_fetch_time(repo_path):
         #print 'No FETCH_HEAD'
         return 'No FETCH_HEAD'
 
+def create_temp_branch(repo_path):
+    git = sh.git.bake(_cwd=repo_path)
+    git.checkout('-b','temp')
+    return 'temp'
+
+def delete_branch(repo_path,branch_name):
+    git = sh.git.bake(_cwd=repo_path)
+
+def tracked_branch(repo_path,branch_name):
+    git = sh.git.bake(_cwd=repo_path)
+    try:
+        remote_tracked = git('rev-parse','--symbolic-full-name',branch_name+'@{u}')
+    except:
+        return None
+    return remote_tracked
+
+def active_branch(repo_path):
+    git = sh.git.bake(_cwd=repo_path)
+    active_branch = git('rev-parse','--abbrev-ref','HEAD')
+    return active_branch
+
 if __name__ == '__main__':
-    script, repo_path = argv
-    print 'modified files'
-    get_modified_files(repo_path)
-    print 'staged files'
-    get_staged_files(repo_path)
-    print 'commits ahead'
-    get_commits(repo_path)
-    print 'commits behind'
-    get_commits_behind(repo_path)
-    print 'last fetch time'
-    repo_last_fetch_time(repo_path)
-    print 'list of local branches'
-    get_branches(repo_path)
-    print 'list of remote branches'
-    get_remote_branches(repo_path)
+    repo_path = raw_input('Please enter repo path:')
+    active_branch = active_branch(repo_path)
+    tracked_branch = tracked_branch(repo_path,'temp')
+    print tracked_branch
+    #print 'modified files'
+    #get_modified_files(repo_path)
+    #print 'staged files'
+    #get_staged_files(repo_path)
+    #print 'commits ahead'
+    #get_commits(repo_path)
+    #print 'commits behind'
+    #get_commits_behind(repo_path)
+    #print 'last fetch time'
+    #repo_last_fetch_time(repo_path)
+    #print 'list of local branches'
+    #get_branches(repo_path)
+    #print 'list of remote branches'
+    #get_remote_branches(repo_path)
