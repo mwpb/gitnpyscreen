@@ -115,10 +115,10 @@ def repo_last_fetch_time(repo_path):
         #print 'No FETCH_HEAD'
         return 'No FETCH_HEAD'
 
-def create_temp_branch(repo_path):
+def create_branch(repo_path,new_branch):
     git = sh.git.bake(_cwd=repo_path)
-    git.checkout('-b','temp')
-    return 'temp'
+    git.checkout('-b',new_branch)
+    return new_branch
 
 def delete_branch(repo_path,branch_name):
     git = sh.git.bake(_cwd=repo_path)
@@ -138,9 +138,10 @@ def active_branch(repo_path):
 
 if __name__ == '__main__':
     repo_path = raw_input('Please enter repo path:')
-    active_branch = active_branch(repo_path)
-    tracked_branch = tracked_branch(repo_path,'temp')
-    print tracked_branch
+    create_branch('/Users/mat/','master-temp')
+    #active_branch = active_branch(repo_path)
+    #tracked_branch = tracked_branch(repo_path,'temp')
+    #print tracked_branch
     #print 'modified files'
     #get_modified_files(repo_path)
     #print 'staged files'
