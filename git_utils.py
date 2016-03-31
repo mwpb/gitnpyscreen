@@ -134,12 +134,13 @@ def tracked_branch(repo_path,branch_name):
 def active_branch(repo_path):
     git = sh.git.bake(_cwd=repo_path)
     active_branch = git('rev-parse','--abbrev-ref','HEAD')
-    return active_branch
+    return str(active_branch).strip()
 
 if __name__ == '__main__':
     repo_path = raw_input('Please enter repo path:')
-    create_branch('/Users/mat/','master-temp')
-    #active_branch = active_branch(repo_path)
+    #create_branch('/Users/mat/','master-temp')
+    print type(active_branch(repo_path))
+    print active_branch(repo_path)
     #tracked_branch = tracked_branch(repo_path,'temp')
     #print tracked_branch
     #print 'modified files'

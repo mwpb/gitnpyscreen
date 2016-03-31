@@ -31,6 +31,4 @@ class StageForm(npyscreen.ActionForm):
         self.parentApp.getForm('COMMIT').repo_name = self.repo_name
         self.parentApp.getForm('COMMIT').file_list = file_list
         self.parentApp.getForm('COMMIT').commit_message.value = ''
-        self.parentApp.getForm('COMMIT').branch_selectone.values = git_utils.get_branches(self.repo_path)
-        self.parentApp.getForm('COMMIT').branch_selectone.value = git_utils.get_current_branch_number(self.repo_path)
         self.parentApp.setNextForm('COMMIT')
