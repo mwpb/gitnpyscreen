@@ -1,7 +1,6 @@
 import npyscreen
 import sqlite_utils
 import git_utils
-import time
 
 class merge_selectone(npyscreen.SelectOne):
     pass
@@ -21,11 +20,9 @@ class MergeForm(npyscreen.ActionForm):
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
-        git_utils.fetch(self.repo_path)
         try:
-            message = git_utils.rebase(self.repo_path,'master')
+            message = git_utils.rebase(self.repo_path,self.merge_selectone.get_selected_objects()[0])
         except:
-            message = git_utils.rebase_continue(self.repo_path,[])
-            npyscreen.notify('rebase problem',title='Conflicts')
-            time.sleep(2)
+            message = git_utils.rebase_exceptions(self.repo_path)
+            npyscreen.notify_confirm(message,title='Rebase Exception')
         self.parentApp.switchFormPrevious()

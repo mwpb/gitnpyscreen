@@ -197,11 +197,12 @@ def ahead_count(repo_path):
 
 def rebase_exceptions(repo_path):
     git = sh.git.bake(_cwd=repo_path)
-    if git('diff','--name-only','--diff-filter=U') == '':
+    try:
+        conflicts = git('rebase','--continue').splitlines()
+        return conflicts
+    except:
         return 'Add or stash changes.'
-    else:
-        return git('diff','--name-only','--diff-filter=U').splitlines()
 
 if __name__ == '__main__':
     #repo_path = raw_input('Please enter repo path:')
-    print conflict_list('/Users/mat/repo-screen/')
+    print rebase_exceptions('/Users/mat/repo-screen/')
