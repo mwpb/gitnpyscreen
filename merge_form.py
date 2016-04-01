@@ -1,7 +1,7 @@
 import npyscreen
 import sqlite_utils
 import git_utils
-from time import time
+import time
 
 class merge_selectone(npyscreen.SelectOne):
     pass
