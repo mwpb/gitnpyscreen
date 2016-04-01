@@ -164,6 +164,7 @@ def start_branch_track(repo_path,local_branch,remote_branch):
 
 def rebase(repo_path,branch_name):
     git = sh.git.bake(_cwd=repo_path)
+    git('fetch','origin')
     git('rebase',branch_name)
     git('checkout',branch_name)
     git('merge',branch_name+'-tmp')
@@ -194,10 +195,12 @@ def ahead_count(repo_path):
     except:
         return '0'
 
-def fetch(repo_path):
+def rebase_exceptions(repo_path):
     git = sh.git.bake(_cwd=repo_path)
-    git('fetch','origin')
-    return True
+    if git('diff','--name-only','--diff-filter=U') == '':
+        return 'Add or stash changes.'
+    else:
+        return git('diff','--name-only','--diff-filter=U').splitlines()
 
 if __name__ == '__main__':
     #repo_path = raw_input('Please enter repo path:')
