@@ -18,7 +18,7 @@ class CommitForm(npyscreen.ActionForm):
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
-        self.parentApp.getForm('MAIN').name = 'self.active_branch'
+        self.parentApp.getForm('MAIN').name = self.active_branch
         if git_utils.tracked_branch(self.active_branch,self.active_branch) != None:
             #comment
             self.parentApp.getForm('MAIN').name = 'self.active_branch'
