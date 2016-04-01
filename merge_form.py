@@ -16,7 +16,7 @@ class MergeForm(npyscreen.ActionForm):
         self.merge_fixedText = self.add(merge_fixedText,value='')
         self.merge_selectone = self.add(merge_selectone,name='merge',values=[])
     def beforeEditing(self):
-        self.merge_fixedText.value = 'Select branch to rebase with.'
+        self.merge_fixedText.value = git_utils.list_tracking_branches(self.repo_path)
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
     def on_ok(self):

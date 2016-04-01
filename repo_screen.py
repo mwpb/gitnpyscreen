@@ -9,6 +9,7 @@ from merge_form import *
 from remote_form import *
 from checkout_form import *
 from untracked_form import *
+from branch_form import *
 import sqlite_utils
 import git_utils
 
@@ -26,6 +27,7 @@ class repoScreenApp(npyscreen.NPSAppManaged):
         self.registerForm('REMOTES',RemoteForm())
         self.registerForm('CHECKOUT',CheckoutForm())
         self.registerForm('UNTRACKED',UntrackedForm())
+        self.registerForm('BRANCH',BranchForm())
 
 def initialiseDB():
     try:

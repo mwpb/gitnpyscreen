@@ -14,7 +14,7 @@ class CommitForm(npyscreen.ActionForm):
         self.active_branch = 'master'
         self.commit_message = self.add_widget(npyscreen.TitleText,use_two_lines=False,name='Commit message:')
     def beforeEditing(self):
-        self.active_branch = git_utils.active_branch(self.repo_name)
+        self.active_branch = git_utils.active_branch(self.repo_path)
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
     def on_ok(self):

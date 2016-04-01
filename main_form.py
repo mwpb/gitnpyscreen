@@ -4,7 +4,7 @@ import git_utils
 
 class repo_multiline(npyscreen.MultiLine):
     def display_value(self,vl):
-        return "{:15} {:3}{:19} {:30} {:9} {:7}".format(vl[0],vl[5],vl[2],vl[1],vl[3],vl[4])
+        return "{:15} {:30} {:15} {:9} {:7}".format(vl[0],vl[1],vl[2],vl[3],vl[4])
 
 class bindings_pager(npyscreen.Pager):
     pass
@@ -21,16 +21,19 @@ class MainForm(npyscreen.ActionForm):
         - - remove repo under cursor
         '''
         self.bindings_list = self.bindings_string.split('\n')
-        self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:3}{:19} {:30} {:9} {:7}".format('Repo Name','(B)','Last Fetch','Repo Path','Tracking','u/t/m/a'))
+        self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:30} {:15} {:7}".format('Repo Name','Repo Path','Checked Out','u/t/m/a'))
         self.repo_multiline = self.add(repo_multiline,name="repos",values=sqlite_utils.list_repos(),value=0,max_height=10)
         self.bindings_pager = self.add(bindings_pager,name='bindings',values=self.bindings_list)
     def beforeEditing(self):
         self.repo_multiline.values = sqlite_utils.list_repos()
     def set_up_handlers(self):
         super(MainForm,self).set_up_handlers()
-        self.handlers.update({'u':self.untracked_files,'-':self.remove_repo,'c':self.checkout,'a':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'+': self.edit_form,'t':self.stage})
+        self.handlers.update({'b':self.branch,'u':self.untracked_files,'-':self.remove_repo,'c':self.checkout,'a':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'+': self.edit_form,'t':self.stage})
     #def afterEditing(self):
         #self.parentApp.setNextForm(None)
+    def branch(self,input):
+        self.parentApp.getForm('BRANCH').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
+        self.parentApp.switchForm('BRANCH')
     def stage(self,input):
         self.parentApp.getForm('STAGE').name = "Staging area for %s" % str(self.repo_multiline.values[self.repo_multiline.cursor_line][0])
         self.parentApp.getForm('STAGE').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
@@ -47,7 +50,6 @@ class MainForm(npyscreen.ActionForm):
     def edit_form(self,input):
         self.parentApp.switchForm('EDIT')
     def merge(self,*args,**keywords):
-        self.parentApp.getForm('MERGE').merge_selectone.values = git_utils.list_tracking_branches(self.repo_multiline.values[self.repo_multiline.cursor_line][1])
         self.parentApp.getForm('MERGE').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
         self.parentApp.getForm('MERGE').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
         self.parentApp.switchForm('MERGE')
