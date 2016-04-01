@@ -164,7 +164,10 @@ def start_branch_track(repo_path,local_branch,remote_branch):
 
 def rebase(repo_path,branch_name):
     git = sh.git.bake(_cwd=repo_path)
-    git('pull','--rebase','origin',branch_name)
+    try:
+        git('pull','--rebase','origin',branch_name)
+    except:
+        return 'Unstaged files'
     git('rebase',branch_name)
     git('checkout',branch_name)
     git('merge',branch_name+'-tmp')
