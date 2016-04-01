@@ -167,8 +167,14 @@ def rebase(repo_path,branch_name):
     git('rebase',branch_name)
     return True
 
-def rebase_continue(repo_path):
+def conflict_list(repo_path):
     git = sh.git.bake(_cwd=repo_path)
+    conflict_list = git('diff','--name-only','--diff-filter=U')
+    return conflict_list
+
+def rebase_continue(repo_path,conflict_list):
+    git = sh.git.bake(_cwd=repo_path)
+    git('add',conflict_list)
     git('rebase','--continue')
     return True
 
@@ -179,4 +185,4 @@ def commit_count(repo_path,base_branch):
 
 if __name__ == '__main__':
     #repo_path = raw_input('Please enter repo path:')
-    print commit_count('/Users/mat/repo-screen/','master')
+    print conflict_list('/Users/mat/repo-screen/')
