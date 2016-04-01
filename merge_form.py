@@ -22,6 +22,7 @@ class MergeForm(npyscreen.ActionForm):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
         try:
+            git_utils.fetch(repo_path)
             message = git_utils.rebase(self.repo_path,'master')
         except:
             message = git_utils.rebase_continue(self.repo_path,[])

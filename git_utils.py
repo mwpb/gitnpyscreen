@@ -183,6 +183,11 @@ def commit_count(repo_path,base_branch):
     count = git('rev-list','--count','^'+base_branch,'HEAD')
     return str(count)
 
+def fetch(repo_path):
+    git = sh.git.bake(_cwd=repo_path)
+    git('fetch','origin')
+    return True
+
 if __name__ == '__main__':
     #repo_path = raw_input('Please enter repo path:')
     print conflict_list('/Users/mat/repo-screen/')
