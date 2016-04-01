@@ -129,9 +129,9 @@ def tracked_branch(repo_path,branch_name):
     git = sh.git.bake(_cwd=repo_path)
     try:
         remote_tracked = git('rev-parse','--symbolic-full-name',branch_name+'@{u}')
+        return remote_tracked
     except:
         return None
-    return remote_tracked
 
 def active_branch(repo_path):
     git = sh.git.bake(_cwd=repo_path)
@@ -174,4 +174,4 @@ def rebase_continue(repo_path):
 
 if __name__ == '__main__':
     #repo_path = raw_input('Please enter repo path:')
-    start_branch_track('/Users/mat/repo-screen/','master','origin/master')
+    print tracked_branch('/Users/mat/repo-screen/','master')
