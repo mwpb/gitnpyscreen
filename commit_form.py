@@ -19,6 +19,7 @@ class CommitForm(npyscreen.ActionForm):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
         if git_utils.tracked_branch(self.active_branch,self.active_branch) != None:
+            #comment
             self.parentApp.getForm('MAIN').name = 'self.active_branch'
             temp_branch = self.active_branch+'-tmp'
             git_utils.create_branch(self.repo_path,temp_branch)
