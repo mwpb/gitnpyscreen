@@ -138,6 +138,12 @@ def active_branch(repo_path):
     active_branch = git('rev-parse','--abbrev-ref','HEAD')
     return str(active_branch).strip()
 
+def list_local_branches(repo_path):
+    git = sh.git.bake(_cwd=repo_path)
+    branches = git('for-each-ref',"--format='%(refname:short),%(upstream:short)'","refs/heads").splitlines()
+    branches = [branch.strip("'").split(',') for branch in branches]
+    return branches
+
 def list_tracking_branches(repo_path):
     git = sh.git.bake(_cwd=repo_path)
     branches = git('for-each-ref',"--format='%(refname:short),%(upstream:short)'","refs/heads").splitlines()
@@ -145,24 +151,17 @@ def list_tracking_branches(repo_path):
     branches = [branch for branch in branches if branch[1]!='']
     return branches
 
+def list_remote_branches(repo_path):
+    git = sh.git.bake(_cwd=repo_path)
+    branches = git('for-each-ref',"--format='%(refname:short)","refs/remotes").splitlines()
+    branches = [branch.strip("'") for branch in branches]
+    return branches
+
+def start_branch_track(repo_path,local_branch,remote_branch):
+    git = sh.git.bake(_cwd=repo_path)
+    git('branch','-u',remote_branch,local_branch)
+    return True
+
 if __name__ == '__main__':
     #repo_path = raw_input('Please enter repo path:')
-    #create_branch('/Users/mat/','master-temp')
-    #print type(active_branch(repo_path))
-    print list_tracking_branches('/Users/mat/')
-    #tracked_branch = tracked_branch(repo_path,'temp')
-    #print tracked_branch
-    #print 'modified files'
-    #get_modified_files(repo_path)
-    #print 'staged files'
-    #get_staged_files(repo_path)
-    #print 'commits ahead'
-    #get_commits(repo_path)
-    #print 'commits behind'
-    #get_commits_behind(repo_path)
-    #print 'last fetch time'
-    #repo_last_fetch_time(repo_path)
-    #print 'list of local branches'
-    #get_branches(repo_path)
-    #print 'list of remote branches'
-    #get_remote_branches(repo_path)
+    start_branch_track('/Users/mat/repo-screen/','master','origin/master')
