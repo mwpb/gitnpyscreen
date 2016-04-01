@@ -4,7 +4,7 @@ import git_utils
 
 class repo_multiline(npyscreen.MultiLine):
     def display_value(self,vl):
-        return "{:15} {:30} {:15} {:9} {:7}".format(vl[0],vl[1],vl[2],vl[3],vl[4])
+        return "{:15} {:30} {:15} {:9}".format(vl[0],vl[1],vl[2],vl[3])
 
 class bindings_pager(npyscreen.Pager):
     pass
@@ -19,6 +19,7 @@ class MainForm(npyscreen.ActionForm):
         a - push files that are Ahead of remote (displays origin master at moment)
         + - add repo
         - - remove repo under cursor
+        q - quit
         '''
         self.bindings_list = self.bindings_string.split('\n')
         self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:30} {:15} {:7}".format('Repo Name','Repo Path','Checked Out','u/t/m/a'))

@@ -50,7 +50,7 @@ def list_repos():
         m = str(len(get_staged_files(row[1])))
         a = str(len(get_commits(row[1])))
         file_statuses = u+'/'+t+'/'+m+'/'+a
-        row = row+(str(get_active_branch(row[1])),)+(file_statuses,)+('('+str(len(get_commits_behind(row[1])))+')',)
+        row = row+(str(get_active_branch(row[1])),)+(file_statuses,)
         new_list.append(row)
     c.close()
     #print new_list
