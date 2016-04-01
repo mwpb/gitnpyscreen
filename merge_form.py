@@ -21,7 +21,7 @@ class MergeForm(npyscreen.ActionForm):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
         try:
-            message = git_utils.rebase(self.repo_path,self.merge_selectone.get_selected_objects()[0])
+            message = git_utils.rebase(self.repo_path,'master')
         except:
             message = git_utils.rebase_exceptions(self.repo_path)
             npyscreen.notify_confirm(message,title='Rebase Exception')
