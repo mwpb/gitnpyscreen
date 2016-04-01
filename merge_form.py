@@ -25,6 +25,6 @@ class MergeForm(npyscreen.ActionForm):
             message = git_utils.rebase(self.repo_path,'master')
         except:
             message = git_utils.rebase_continue(self.repo_path,[])
-        npyscreen.notify(message, title='Conflicts')
+        npyscreen.notify('rebase problem',title='Conflicts')
         time.sleep(2)
         self.parentApp.switchFormPrevious()
