@@ -48,7 +48,7 @@ def list_repos():
         u = str(len(untracked_files(row[1])))
         t = str(len(get_modified_files(row[1])))
         m = str(len(get_staged_files(row[1])))
-        a = str(len(get_commits(row[1])))
+        a = commit_count(row[1],active_branch(row[1]))
         file_statuses = u+'/'+t+'/'+m+'/'+a
         row = row+(str(get_active_branch(row[1])),)+(file_statuses,)
         new_list.append(row)
