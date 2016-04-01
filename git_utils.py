@@ -172,6 +172,11 @@ def rebase_continue(repo_path):
     git('rebase','--continue')
     return True
 
+def commit_count(repo_path,base_branch):
+    git = sh.git.bake(_cwd=repo_path)
+    count = git('rev-list','--count','HEAD','^'+branch_name)
+    return count
+
 if __name__ == '__main__':
     #repo_path = raw_input('Please enter repo path:')
-    print tracked_branch('/Users/mat/repo-screen/','master')
+    print commit_count('/Users/mat/repo-screen/','master')
