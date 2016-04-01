@@ -162,6 +162,11 @@ def start_branch_track(repo_path,local_branch,remote_branch):
     git('branch','-u',remote_branch,local_branch)
     return True
 
+def rebase(repo_path,branch_name):
+    git = sh.git.bake(_cwd=repo_path)
+    git('rebase',branch_name)
+    return True
+
 if __name__ == '__main__':
     #repo_path = raw_input('Please enter repo path:')
     start_branch_track('/Users/mat/repo-screen/','master','origin/master')
