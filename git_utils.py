@@ -167,6 +167,7 @@ def rebase(repo_path,branch_name):
     git('rebase',branch_name)
     git('checkout',branch_name)
     git('merge',branch_name+'-tmp')
+    git('branch','-D',branch_name+'-tmp')
     return True
 
 def conflict_list(repo_path):
@@ -184,6 +185,14 @@ def commit_count(repo_path,base_branch):
     git = sh.git.bake(_cwd=repo_path)
     count = git('rev-list','--count','^'+base_branch,'HEAD')
     return str(count)
+
+def ahead_count(repo_path):
+    git = sh.git.bake(_cwd=repo_path)
+    try:
+        count = git('rev-list','--count','@{u}..')
+        return str(count)
+    except:
+        return '0'
 
 def fetch(repo_path):
     git = sh.git.bake(_cwd=repo_path)
