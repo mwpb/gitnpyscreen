@@ -168,7 +168,10 @@ def rebase(repo_path,branch_name):
         git('pull','--rebase','origin',branch_name)
     except:
         return 'Unstaged files'
-    git('rebase',branch_name)
+    try:
+        git('rebase',branch_name)
+    except:
+        return 'Rebase exception'
     git('checkout',branch_name)
     git('merge',branch_name+'-tmp')
     git('branch','-D',branch_name+'-tmp')
