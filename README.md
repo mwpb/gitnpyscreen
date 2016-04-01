@@ -3,7 +3,7 @@
 A curses front-end to git.
 Designed to see status of multiple repositories at a glance.
 
-Release 0.3.0..
+Release 0.3.0:
 Now single database is stored at '~/.config/repo-screen/repoDatabase.db'.
 
 Release 0.2.0:
