@@ -21,7 +21,7 @@ class MergeForm(npyscreen.ActionForm):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
         try:
-            git_utils.merge_current(self.repo_path,self.merge_selectone.get_selected_objects())
+            git_utils.rebase(self.repo_path,self.merge_selectone.get_selected_objects())
         except:
             npyscreen.notify('Merge conflicts', title='Conflicts')
             time.sleep(1)
