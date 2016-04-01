@@ -20,4 +20,5 @@ class MergeForm(npyscreen.ActionForm):
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
     def on_ok(self):
-        git_utils.rebase(self.repo_path,str(self.merge_selectone.get_selected_objects()[0][0]))
+        message = git_utils.rebase(self.repo_path,str(self.merge_selectone.get_selected_objects()[0][0]))
+        npyscreen.notify_confirm(message,title='Conclusion')

@@ -175,7 +175,7 @@ def rebase(repo_path,branch_name):
     git('checkout',branch_name)
     git('merge',branch_name+'-tmp')
     git('branch','-D',branch_name+'-tmp')
-    return True
+    return 'Pull, merge and rebase completed.'
 
 def conflict_list(repo_path):
     git = sh.git.bake(_cwd=repo_path)
