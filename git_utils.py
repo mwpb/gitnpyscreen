@@ -174,7 +174,7 @@ def rebase_continue(repo_path):
 
 def commit_count(repo_path,base_branch):
     git = sh.git.bake(_cwd=repo_path)
-    count = git('rev-list','--count','HEAD','^'+base_branch)
+    count = git('rev-list','--count','^'+base_branch,'HEAD')
     return str(count)
 
 if __name__ == '__main__':

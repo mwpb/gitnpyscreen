@@ -15,21 +15,21 @@ class MainForm(npyscreen.ActionForm):
         self.bindings_string='''
         u - stage Untracked files
         t - stage Tracked files
-        m - merge tracked branch with local or remote
+        r - Rebase tmp branch over local branch
         a - push files that are Ahead of remote (displays origin master at moment)
         + - add repo
         - - remove repo under cursor
         q - quit
         '''
         self.bindings_list = self.bindings_string.split('\n')
-        self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:30} {:15} {:7}".format('Repo Name','Repo Path','Checked Out','u/t/m/a'))
+        self.add_widget(npyscreen.FixedText,editable=False,color='green',value="{:15} {:30} {:15} {:7}".format('Repo Name','Repo Path','Checked Out','u/t/r/a'))
         self.repo_multiline = self.add(repo_multiline,name="repos",values=sqlite_utils.list_repos(),value=0,max_height=10)
         self.bindings_pager = self.add(bindings_pager,name='bindings',values=self.bindings_list)
     def beforeEditing(self):
         self.repo_multiline.values = sqlite_utils.list_repos()
     def set_up_handlers(self):
         super(MainForm,self).set_up_handlers()
-        self.handlers.update({'b':self.branch,'u':self.untracked_files,'-':self.remove_repo,'c':self.checkout,'a':self.do_push,'r':self.on_refresh,"f":self.fetch,"m": self.merge,"q": self.exit,'+': self.edit_form,'t':self.stage})
+        self.handlers.update({'b':self.branch,'u':self.untracked_files,'-':self.remove_repo,'c':self.checkout,'a':self.do_push,'r':self.on_refresh,"f":self.fetch,"r": self.rebase,"q": self.exit,'+': self.edit_form,'t':self.stage})
     #def afterEditing(self):
         #self.parentApp.setNextForm(None)
     def branch(self,input):
@@ -50,7 +50,7 @@ class MainForm(npyscreen.ActionForm):
         self.parentApp.switchForm(None)
     def edit_form(self,input):
         self.parentApp.switchForm('EDIT')
-    def merge(self,*args,**keywords):
+    def rebase(self,*args,**keywords):
         self.parentApp.getForm('MERGE').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
         self.parentApp.getForm('MERGE').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
         self.parentApp.switchForm('MERGE')
