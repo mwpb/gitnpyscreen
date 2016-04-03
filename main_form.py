@@ -52,7 +52,7 @@ class MainForm(npyscreen.ActionForm):
         self.parentApp.switchForm('EDIT')
     def rebase(self,*args,**keywords):
         self.parentApp.getForm('MERGE').sync_stage = 'none'
-        self.parentApp.getForm('MERGE').output_pager.values = ['waiting for output...']
+        self.parentApp.getForm('MERGE').output_pager.values = ['none','waiting for output...']
         self.parentApp.getForm('MERGE').repo_name = self.repo_multiline.values[self.repo_multiline.cursor_line][0]
         self.parentApp.getForm('MERGE').repo_path = self.repo_multiline.values[self.repo_multiline.cursor_line][1]
         self.parentApp.switchForm('MERGE')
