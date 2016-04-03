@@ -31,14 +31,7 @@ class MergeForm(npyscreen.ActionForm):
         output, message = git_utils.sync(self.repo_path,self.sync_state,local,remote)
         self.parentApp.getForm('MERGE').sync_state = output
         self.parentApp.getForm('MERGE').output_pager.values = [self.sync_state]+message.splitlines()
-        self.parentApp.switchForm('MERGE')
-        #message = subprocess.check_output(['git','merge',local+'-tmp'],cwd=self.repo_path)
-        #npyscreen.notify_confirm(message,title='Merge result')
-        #message = subprocess.check_output(['git','checkout',local+'-tmp'],cwd=self.repo_path)
-        #message = subprocess.check_output(['git','rebase',local],cwd=self.repo_path)
-        #npyscreen.notify_confirm(message,title='Rebase result')
-        ##message = git_utils.rebase(self.repo_path,str(self.merge_selectone.get_selected_objects()[0][0]),str(self.merge_selectone.get_selected_objects()[0][1]))
-        ##while message == 'rebase':
-        ##    npyscreen.notify_confirm(message,title='Conclusion')
-        ##    message = git_utils.rebase_continue(self.repo_path)
-        
+        if self.sync_state == 'ready to push':
+            self.parentApp.switchForm('MAIN')
+        else:
+            self.parentApp.switchForm('MERGE')

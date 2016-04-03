@@ -250,6 +250,8 @@ def sync(repo_path,sync_state,local,remote):
         git('merge',local+'-tmp')
         message = git('branch','-D',local+'-tmp')
         return 'ready to push', message
+    if sync_state == 'ready to push':
+        return 'ready to push', 'ready to push'
     else:
         return 'unknown', 'none'
 
