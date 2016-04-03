@@ -1,3 +1,4 @@
+import subprocess
 from git import Repo
 from sys import argv
 import os
@@ -162,31 +163,39 @@ def start_branch_track(repo_path,local_branch,remote_branch):
     git('branch','-u',remote_branch,local_branch)
     return True
 
-def rebase(repo_path,branch_name):
+def rebase(repo_path,local,remote):
     git = sh.git.bake(_cwd=repo_path)
+    git('fetch','origin')
     try:
-        git('pull','--rebase','origin',branch_name)
+        git('checkout',local)
+        git('merge',remote)
     except:
-        return 'Unstaged files'
-    try:
-        git('rebase',branch_name)
-    except:
-        return 'Rebase exception'
-    git('checkout',branch_name)
-    git('merge',branch_name+'-tmp')
-    git('branch','-D',branch_name+'-tmp')
-    return 'Pull, merge and rebase completed.'
+        return 'master merge exception'
+    git('checkout',local+'-tmp')
+    #try:
+    #    git('rebase',local)
+    #except:
+    #    return 'rebase'
+    #try:
+    #    git('checkout',local)
+    #    git('merge',local+'-tmp')
+    #except:
+    #    return 'Temp Merge exception'
+    #git('branch','-D',local+'-tmp')
+    #return 'Pull, merge and rebase completed.'
 
 def conflict_list(repo_path):
     git = sh.git.bake(_cwd=repo_path)
     conflict_list = git('diff','--name-only','--diff-filter=U')
     return conflict_list
 
-def rebase_continue(repo_path,conflict_list):
+def rebase_continue(repo_path):
     git = sh.git.bake(_cwd=repo_path)
-    git('add',conflict_list)
-    git('rebase','--continue')
-    return True
+    git('add','.')
+    try:
+        output = git('rebase','--continue')
+    except:
+        return 
 
 def commit_count(repo_path,base_branch):
     git = sh.git.bake(_cwd=repo_path)
@@ -208,6 +217,41 @@ def rebase_exceptions(repo_path):
         return conflicts
     except:
         return 'Add or stash changes.'
+
+def sync(repo_path,sync_state,local,remote):
+    git = sh.git.bake(_cwd=repo_path)
+    if sync_state == 'none':
+        git('fetch','origin')
+        git('checkout',local)
+        try:
+            git('merge',remote)
+            message = git('checkout',local+'-tmp')
+            return 'merge complete', message
+        except ErrorReturnCode:
+            message = git('checkout',local+'-tmp')
+            return 'merge error', message
+    if sync_state == 'merge complete':
+        rebase_message = ''
+        try:
+            message = subprocess.check_output(['git','rebase',local],cwd=repo_path)
+            return 'rebase complete', message
+        except subprocess.CalledProcessError as e:
+            return 'rebase in progress', e.output
+    if sync_state == 'rebase in progress':
+        git('add','.')
+        try:
+            message = git('rebase','--continue')
+            return 'rebase complete', message
+        except:
+            message = git('rebase','--continue')
+            return 'rebase in progress', message
+    if sync_state == 'rebase complete':
+        git('checkout',local)
+        git('merge',local+'-tmp')
+        message = git('branch','-D',local+'-tmp')
+        return 'ready to push', message
+    else:
+        return 'unknown', 'none'
 
 if __name__ == '__main__':
     #repo_path = raw_input('Please enter repo path:')
