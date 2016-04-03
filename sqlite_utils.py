@@ -50,7 +50,7 @@ def list_repos():
         r = commit_count(row[1],active_branch(row[1]).rsplit('-',1)[0].rstrip())
         a = ahead_count(row[1])
         file_statuses = u+'/'+t+'/'+r+'/'+a
-        row = row+(str(get_active_branch(row[1])),)+(file_statuses,)
+        row = row+(str(active_branch(row[1])),)+(file_statuses,)
         new_list.append(row)
     c.close()
     #print new_list
