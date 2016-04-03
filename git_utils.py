@@ -43,14 +43,6 @@ import datetime
 #    #print value
 #    return value
 #
-#def get_remote_branches(repo_path):
-#    repo = Repo(repo_path)
-#    remote_branches = []
-#    for branch in repo.git.branch('-r').split('\n'):
-#        remote_branches.append(branch.strip())
-#    #print remote_branches
-#    return remote_branches
-#
 #def get_branches(repo_path):
 #    repo = Repo(repo_path)
 #    branch_list = []
@@ -95,6 +87,14 @@ import datetime
 #        return 'No FETCH_HEAD'
 #
 ## Rebase workflow completely contained below
+def get_remote_branches(repo_path):
+    repo = Repo(repo_path)
+    remote_branches = []
+    for branch in repo.git.branch('-r').split('\n'):
+        remote_branches.append(branch.strip())
+    #print remote_branches
+    return remote_branches
+
 def commit_files(repo_path,file_list,commit_message):
     git = sh.git.bake(_cwd=repo_path)
     for commit_file in file_list:
