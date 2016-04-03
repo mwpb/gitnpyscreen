@@ -10,11 +10,6 @@ import datetime
 #    for file_for_tracking in file_list:
 #        git.add(file_for_tracking)
 #
-#def push_remote(repo_path,remote_name):
-#    (remote,branch) = remote_name.split('/')
-#    git = sh.git.bake(_cwd=repo_path)
-#    git.push(remote,branch)
-#
 #def checkout(repo_path,new_branch):
 #    git = sh.git.bake(_cwd=repo_path)
 #    git.checkout(new_branch)
@@ -87,6 +82,11 @@ import datetime
 #        return 'No FETCH_HEAD'
 #
 ## Rebase workflow completely contained below
+def push_remote(repo_path,remote_name):
+    (remote,branch) = remote_name.split('/')
+    git = sh.git.bake(_cwd=repo_path)
+    git.push(remote,branch)
+
 def get_remote_branches(repo_path):
     repo = Repo(repo_path)
     remote_branches = []
