@@ -102,7 +102,7 @@ def commit_files(repo_path,file_list,commit_message):
     git.commit('-m',commit_message)
 
 def get_modified_files(repo_path):
-    print repo_path
+    #print repo_path
     repo = Repo(repo_path)
     modified_files = []
     for file in repo.index.diff(None):
