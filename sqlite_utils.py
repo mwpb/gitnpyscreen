@@ -45,13 +45,17 @@ def list_repos():
     repo_list = c.fetchall()
     new_list = []
     for row in repo_list:
-        u = str(len(untracked_files(row[1])))
-        t = str(len(get_modified_files(row[1])))
-        r = commit_count(row[1],active_branch(row[1]).rsplit('-',1)[0].rstrip())
-        a = ahead_count(row[1])
-        file_statuses = u+'/'+t+'/'+r+'/'+a
-        row = row+(str(active_branch(row[1])),)+(file_statuses,)
-        new_list.append(row)
+        try:
+            u = str(len(untracked_files(row[1])))
+            t = str(len(get_modified_files(row[1])))
+            r = commit_count(row[1],active_branch(row[1]).rsplit('-',1)[0].rstrip())
+            a = ahead_count(row[1])
+            file_statuses = u+'/'+t+'/'+r+'/'+a
+            row = row+(str(active_branch(row[1])),)+(file_statuses,)
+            new_list.append(row)
+        except:
+            row = row+('no git repo here','')
+            new_list.append(row)
     c.close()
     #print new_list
     return new_list

@@ -198,7 +198,7 @@ def rebase_continue(repo_path):
 def commit_count(repo_path,base_branch):
     git = sh.git.bake(_cwd=repo_path)
     count = git('rev-list','--count','^'+base_branch,'HEAD')
-    return str(count)
+    return str(count).rstrip()
 
 def ahead_count(repo_path):
     git = sh.git.bake(_cwd=repo_path)

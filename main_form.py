@@ -16,7 +16,7 @@ class MainForm(npyscreen.ActionForm):
         u - stage Untracked files
         t - stage Tracked files
         r - Rebase tmp branch over local branch
-        a - push files that are Ahead of remote (displays origin master at moment)
+        a - push files that are Ahead of remote
         + - add repo
         - - remove repo under cursor
         q - quit
