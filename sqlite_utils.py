@@ -46,15 +46,17 @@ def list_repos():
     new_list = []
     for row in repo_list:
         try:
+            act_branch = active_branch(row[1])
             u = str(len(untracked_files(row[1])))
             t = str(len(get_modified_files(row[1])))
-            r = commit_count(row[1],active_branch(row[1]).rsplit('-',1)[0].rstrip())
+            r = commit_count(row[1],act_branch.rsplit('-',1)[0].rstrip())
             a = ahead_count(row[1])
             file_statuses = u+'/'+t+'/'+r+'/'+a
-            row = row+(str(active_branch(row[1])),)+(file_statuses,)
+            remote_tracked = str(tracked_branch(row[1],act_branch))[13:]
+            row = row+(str(act_branch),remote_tracked,file_statuses)
             new_list.append(row)
         except:
-            row = row+('no git repo here','')
+            row = row+('git repo not configured,','perhaps no remote','')
             new_list.append(row)
     c.close()
     #print new_list
