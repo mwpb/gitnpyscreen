@@ -32,6 +32,7 @@ class MergeForm(npyscreen.ActionForm):
         self.parentApp.getForm('MERGE').sync_state = output
         self.parentApp.getForm('MERGE').output_pager.values = [self.sync_state]+message.splitlines()
         if self.sync_state == 'ready to push':
+            self.sync_state = 'none'
             self.parentApp.switchForm('MAIN')
         else:
             self.parentApp.switchForm('MERGE')
