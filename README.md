@@ -21,12 +21,12 @@ Then
 
 should install the right dependencies.
 
-###npyscreen
+### npyscreen
 http://npyscreen.readthedocs.org/example-addressbk.html?highlight=recordlist
 
     pip install npyscreen
 
-###gitpython
+### gitpython
 http://gitpython.readthedocs.org/en/stable/
 
     pip install gitpython
@@ -36,8 +36,8 @@ https://amoffat.github.io/sh/
 
     pip install sh
 
-##Also uses
+## Also uses
 
-###sqlite3 python module
+### sqlite3 python module
 https://docs.python.org/2/library/sqlite3.html
 
